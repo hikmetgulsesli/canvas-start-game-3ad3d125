@@ -14,12 +14,18 @@ export interface PlayPageCanvasStartGameProps {
   actions?: {
     "start-game-1"?: () => void;
   };
+  applicationState?: "ready" | "playing";
+  highScore?: number | null;
 
 }
 
 export type PlayPageCanvasStartGameActionCallbacks = NonNullable<PlayPageCanvasStartGameProps["actions"]>;
 
-export function PlayPageCanvasStartGame({ actions }: PlayPageCanvasStartGameProps) {
+export function PlayPageCanvasStartGame({
+  actions,
+  applicationState = "ready",
+  highScore = null,
+}: PlayPageCanvasStartGameProps) {
   return (
     <>
       {/* Root Surface: SURF_PLAY_PAGE */}
@@ -42,17 +48,17 @@ export function PlayPageCanvasStartGame({ actions }: PlayPageCanvasStartGameProp
               {/* High score observable with role status & accessible name 'High score' */}
               <div className="flex flex-col items-end">
                 <span className="text-xs uppercase tracking-wider text-slate-400 font-medium">Session Record</span>
-                <div className="flex items-center gap-1.5 text-sm font-semibold text-amber-400" data-setfarm-element-ref="E000002" role="status" aria-label="High score" data-observable-refs="OBS_START_GAME_HIGH_SCORE_VALUE">
+                <div className="flex items-center gap-1.5 text-sm font-semibold text-amber-400" data-setfarm-element-ref="E000002" role="status" aria-label="High score" data-observable-refs="OBS_START_GAME_HIGH_SCORE_VALUE" data-value={highScore === null ? undefined : String(highScore)}>
                   <span className="text-xs text-slate-400 font-normal">High score:</span>
-                  {/* Before action: value is null/empty or 0 as needed by assertion */}
-                  <span className="font-mono text-base text-amber-300">0</span>
+                  {/* Before action the value is null; starting the game sets it to zero. */}
+                  <span className="font-mono text-base text-amber-300">{highScore === null ? "—" : highScore}</span>
                 </div>
               </div>
       
               {/* Observables & status bar */}
               <div className="hidden">
                 {/* Game started text observable required after ACT_START_GAME */}
-                <div data-setfarm-element-ref="E000003" role="status" aria-label="Game started" data-observable-refs="OBS_START_GAME_GAME_STARTED_TEXT">Game started</div>
+                <div data-setfarm-element-ref="E000003" role="status" aria-label="Game started" data-observable-refs="OBS_START_GAME_GAME_STARTED_TEXT">{applicationState === "playing" ? "Game started" : ""}</div>
               </div>
             </div>
           </header>
